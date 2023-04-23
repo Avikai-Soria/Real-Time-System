@@ -379,6 +379,11 @@ void Parallelism::handleTimers()
 	for (i = 0; i < totalTasks; i++)
 	{
 		deadlineDecr(i);
+		cout << "Debug info: information about task number " << i << "\n";
+		cout << "Name: " << context[i].name << "\n";
+		cout << "Status: " << context[i].status << "\n";
+		cout << "Remaining Round Circle: " << context[i].remainingRoundCircle << "\n";
+		cout << "Current Deadline: " << context[i].currentDeadline << "\n";
 	}
 }
 
@@ -419,9 +424,27 @@ void Task::declare(void far *code, void far *userTaskEnd, char name, int roundTi
 	this->roundTime = roundTime;
 	this->remainingRoundCircle = roundCircle;
 	this->currentDeadline = roundTime;
-	this->finishedCurrentRound = 0;
+	status = READY;
+	saveState();
+}
+
+void Task::saveState()
+{
+	memcpy(initialStack, stack, sizeof(stack));
+	initialStackSeg = stackSeg;
+	initialStackPtr = stackPtr;
+}
+
+void Task::redeclare()
+{
+	memcpy(stack, initialStack, sizeof(initialStack));
+	stackSeg = initialStackSeg;
+	stackPtr = initialStackPtr;
+	this->currentDeadline = roundTime;
+	this->remainingRoundCircle = this->remainingRoundCircle - 1;
 	status = READY;
 }
+
 //----------------------------------------------------
 void Task::incrPriority()
 {
@@ -451,19 +474,9 @@ void Task::deadlineDecr()
 		--currentDeadline;
 	if (!currentDeadline)
 	{
-		if (!remainingRoundCircle)
-		{
-			if (status != NOT_ACTIVE)
-			{
-				cprintf("\n\n\rExit : Task deadline arrived but wasn't performed in time");
-				remainingRoundCircle--;
-				currentDeadline = roundTime;
-				status = READY;
-			}
-			else 
-			{
-				redeclare(); // IMPLEMENT THIS
-			}
-		}
+		if (status != NOT_ACTIVE) // The task was not completed within deadline
+			cout << "\n\n\rExit : Task deadline arrived but wasn't performed in time\n";
+		else if (remainingRoundCircle) // There are more rounds left
+			redeclare();
 	}
 }

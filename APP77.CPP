@@ -11,7 +11,7 @@
 void a()
 {
 	SMARTS.contextSwitchOff();
-	cout << "\n *************   A Start    *********************";
+	cout << "\n *************   A Start    *********************\n";
 	SMARTS.contextSwitchOn();
 	for (int j = 0; j < 500; j++)
 	{
@@ -22,14 +22,14 @@ void a()
 		SMARTS.contextSwitchOn();
 	}
 	SMARTS.contextSwitchOff();
-	cout << "\n *************   A Finish   *********************";
+	cout << "\n *************   A Finish   *********************\n";
 	SMARTS.contextSwitchOn();
 }
 
 void b()
 {
 	SMARTS.contextSwitchOff();
-	cout << "\n *************   B Start    *********************";
+	cout << "\n *************   B Start    *********************\n";
 	SMARTS.contextSwitchOn();
 	for (int j = 0; j < 500; j++) // Waste 600000 operations time
 	{
@@ -40,14 +40,14 @@ void b()
 		SMARTS.contextSwitchOn();
 	}
 	SMARTS.contextSwitchOff();
-	cout << "\n *************   B Finish   *********************";
+	cout << "\n *************   B Finish   *********************\n";
 	SMARTS.contextSwitchOn();
 }
 
 void c()
 {
 	SMARTS.contextSwitchOff();
-	cout << "\n *************   C Start    *********************";
+	cout << "\n *************   C Start    *********************\n";
 	SMARTS.contextSwitchOn();
 	for (int j = 0; j < 500; j++)
 	{
@@ -58,7 +58,7 @@ void c()
 		SMARTS.contextSwitchOn();
 	}
 	SMARTS.contextSwitchOff();
-	cout << "\n *************   C Finish   *********************";
+	cout << "\n *************   C Finish   *********************\n";
 	SMARTS.contextSwitchOn();
 }
 
