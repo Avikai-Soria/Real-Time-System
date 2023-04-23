@@ -61,7 +61,7 @@ public:
 	int currentDeadline;			// the current deadline
 	//const int roundCircle;		// How many rounds need to be completed
 	int remainingRoundCircle;		// how many rounds left to finish task
-	int finishedCurrentRound;		// whether the current round
+	int finishedCurrentRound;		// whether the current round was finished, bool
 	/* Finish new additions */
 
 	Task();

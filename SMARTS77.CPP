@@ -376,7 +376,8 @@ void Parallelism::handleTimers()
 				--sleepTasks;
 		}
 	}
-	for (i = 0; i < totalTasks; i++) {
+	for (i = 0; i < totalTasks; i++)
+	{
 		deadlineDecr(i);
 	}
 }
@@ -450,22 +451,19 @@ void Task::deadlineDecr()
 		--currentDeadline;
 	if (!currentDeadline)
 	{
-		if (finishedCurrentRound)
+		if (!remainingRoundCircle)
 		{
-			if (!remainingRoundCircle)
+			if (status != NOT_ACTIVE)
 			{
+				cprintf("\n\n\rExit : Task deadline arrived but wasn't performed in time");
 				remainingRoundCircle--;
 				currentDeadline = roundTime;
 				status = READY;
 			}
-			else
+			else 
 			{
-				status = NOT_ACTIVE;
+				redeclare(); // IMPLEMENT THIS
 			}
 		}
-	}
-	else
-	{
-		cprintf("\n\n\rExit : Task deadline arrived but wasn't performed in time");
 	}
 }
