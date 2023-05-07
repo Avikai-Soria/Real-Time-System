@@ -29,6 +29,7 @@ Parallelism::Parallelism()
 	activeTasks = 0;
 	totalTasks = 0;
 	deadlock = false;
+	errorFlag = false;
 	contextSwitchFlag = true;
 	endOfTimeSlice = true;
 }
@@ -103,7 +104,13 @@ void Parallelism::runTheTasks()
 			cprintf("\n\n\rExit : deadlock");
 			break;
 		}
-		if (activeTasks == 0)
+		if (errorFlag)
+		{
+			textcolor(RED);
+			cprintf("\n\n\rExit : Error, function did not finish in time.");
+			break;
+		}
+		if (allTasksDone())
 		{
 			cprintf("\n\n\rExit : finish");
 			break;
@@ -122,6 +129,14 @@ void Parallelism::callScheduler()
 {
 	setProgInt();
 	asm int timerInt;
+}
+
+int Parallelism::allTasksDone()
+{
+	for (int i = 0; i < totalTasks; ++i)
+		if (context[i].status != NOT_ACTIVE || context[i].remainingRoundCircle > 1)
+			return false;
+	return true;	
 }
 
 void Parallelism::restoreSchedStack()
@@ -157,6 +172,16 @@ int Parallelism::getDeadlock()
 void Parallelism::setDeadlock()
 {
 	deadlock = true;
+}
+
+int Parallelism::getError()
+{
+	return errorFlag;
+}
+
+void Parallelism::setError()
+{
+	errorFlag = true;
 }
 
 int Parallelism::contextSwitchOn()
@@ -379,11 +404,22 @@ void Parallelism::handleTimers()
 	for (i = 0; i < totalTasks; i++)
 	{
 		deadlineDecr(i);
+		/*
+		cprintf("Debug info: information about task number %d", i);
+		cprintf("Name: %c", context[i].name);
+		cprintf("Name: %s", context[i].name);
+		cprintf("Status: %s", context[i].status);
+		cprintf("Remaining Round Circle: %d", context[i].remainingRoundCircle);
+		cprintf("Current Deadline: %d", context[i].currentDeadline);
+		*/
+		/*
 		cout << "Debug info: information about task number " << i << "\n";
 		cout << "Name: " << context[i].name << "\n";
 		cout << "Status: " << context[i].status << "\n";
 		cout << "Remaining Round Circle: " << context[i].remainingRoundCircle << "\n";
 		cout << "Current Deadline: " << context[i].currentDeadline << "\n";
+
+		*/
 	}
 }
 
@@ -475,8 +511,10 @@ void Task::deadlineDecr()
 	if (!currentDeadline)
 	{
 		if (status != NOT_ACTIVE) // The task was not completed within deadline
-			cout << "\n\n\rExit : Task deadline arrived but wasn't performed in time\n";
-		else if (remainingRoundCircle) // There are more rounds left
+		{
+			SMARTS.setError();
+		}
+		else if (remainingRoundCircle - 1) // There are more rounds left
 			redeclare();
 	}
 }

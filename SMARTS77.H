@@ -64,10 +64,10 @@ public:
 	int sleepCount;				 // the sleep remainder time
 
 	/* New additions */
-	int roundTime;		 // the round time
-	int currentDeadline; // the current deadline
+	int roundTime;			  // the round time
+	int currentDeadline;	  // the current deadline
 	int remainingRoundCircle; // how many rounds left to finish task
-							  /* Finish new additions */
+	/* Finish new additions */
 
 	/* New restore values */
 	unsigned initialStack[MaxStack];
@@ -95,6 +95,7 @@ private:
 	int totalTasks;				  // total declared tasks
 	int currentTask;			  // time slice holding task
 	int deadlock;				  // deadlock flag
+	int errorFlag;				  // error flag
 	int progInt;				  // 'program interrupt' flag
 	int contextSwitchFlag;		  // enables/disables context switch
 	int endOfTimeSlice;			  // indicates that has to be a context switch as soon as possible
@@ -126,13 +127,15 @@ public:
 	int getTotalTasks();														// get total declared tasks
 	int getDeadlock();															// get deadlock flag
 	void setDeadlock();															// set deadlock flag
-	int contextSwitchOn();														// enable context switch
-	void contextSwitchOff();													// disable context switch
-	int getContextSwitch();														// get 'context switch' flag status
-	void setProgInt();															// set the 'program interrupt' flag
-	void resetProgInt();														// clear the 'program interrupt' flag
-	int getProgInt();															// get the 'program interrupt' flag status
-	void setEndOfTimeSlice();													// set the 'end of time slice' flag
+	int getError();															// get deadlock flag
+	void setError();
+	int contextSwitchOn();	  // enable context switch
+	void contextSwitchOff();  // disable context switch
+	int getContextSwitch();	  // get 'context switch' flag status
+	void setProgInt();		  // set the 'program interrupt' flag
+	void resetProgInt();	  // clear the 'program interrupt' flag
+	int getProgInt();		  // get the 'program interrupt' flag status
+	void setEndOfTimeSlice(); // set the 'end of time slice' flag
 	char getName(int taskNum);
 	char getCurrentName();
 	taskStatus getStatus(int taskNum);
@@ -159,11 +162,13 @@ public:
 	/* New getters */
 	int getRoundTime(int Tasknum);
 	int getDeadline(int taskNum);
-	// int getRoundCircle(int taskNum);
+	// int getRoundCircle(int taskNum);    
 	int getRemainingRoundCircle(int taskNum);
 	/* New setters */
 	void setDeadline(int Tasknum, int deadline);
 	void setRemainingRoundCircle(int Tasknum, int remainingRoundCircle);
+	/* New function to check that all tasks finished*/
+	int allTasksDone();
 };
 //=======================
 /**********    Functions    **********/

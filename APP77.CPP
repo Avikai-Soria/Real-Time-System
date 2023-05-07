@@ -13,7 +13,7 @@ void a()
 	SMARTS.contextSwitchOff();
 	cout << "\n *************   A Start    *********************\n";
 	SMARTS.contextSwitchOn();
-	for (int j = 0; j < 500; j++)
+	for (int j = 0; j < 50; j++)
 	{
 		for (long i = 0; i < 600000; i++)
 			; // Waste 600000 operations time
@@ -31,7 +31,7 @@ void b()
 	SMARTS.contextSwitchOff();
 	cout << "\n *************   B Start    *********************\n";
 	SMARTS.contextSwitchOn();
-	for (int j = 0; j < 500; j++) // Waste 600000 operations time
+	for (int j = 0; j < 50; j++) // Waste 600000 operations time
 	{
 		for (long i = 0; i < 600000; i++)
 			;
@@ -49,7 +49,7 @@ void c()
 	SMARTS.contextSwitchOff();
 	cout << "\n *************   C Start    *********************\n";
 	SMARTS.contextSwitchOn();
-	for (int j = 0; j < 500; j++)
+	for (int j = 0; j < 50; j++)
 	{
 		for (long i = 0; i < 600000; i++)
 			; // Waste 600000 operations time
@@ -66,8 +66,36 @@ void main()
 {
 	clrscr();
 	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, earliesDeadlineFirst);
-	SMARTS.declareTask(a, 'A', 5, 70);
-	SMARTS.declareTask(b, 'B', 4, 100);
-	SMARTS.declareTask(c, 'C', 3, 50);
+	SMARTS.declareTask(a, 'A', 500, 1);
+	SMARTS.declareTask(b, 'B', 500, 2);
+	SMARTS.declareTask(c, 'C', 500, 3);
 	SMARTS.runTheTasks();
 }
+
+/*
+Both fail:
+SMARTS.declareTask(a, 'A', 50, 3);
+SMARTS.declareTask(b, 'B', 100, 4);
+SMARTS.declareTask(c, 'C', 200, 5);
+*/
+
+/*
+RR fail and EDF succeed:
+SMARTS.declareTask(a, 'A', 224, 3);
+SMARTS.declareTask(b, 'B', 112, 5);
+SMARTS.declareTask(c, 'C', 336, 4);
+*/
+
+/*
+Both succeed:
+SMARTS.declareTask(a, 'A', 336, 5);
+SMARTS.declareTask(b, 'B', 336, 3);
+SMARTS.declareTask(c, 'C', 336, 4);
+*/
+
+/*
+Teacher example:
+SMARTS.declareTask(a, 'A', 30, 2);
+SMARTS.declareTask(b, 'B', 30, 3);
+SMARTS.declareTask(c, 'C', 30, 4);
+*/
