@@ -65,10 +65,10 @@ void c()
 void main()
 {
 	clrscr();
-	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, earliesDeadlineFirst);
-	SMARTS.declareTask(a, 'A', 500, 1);
-	SMARTS.declareTask(b, 'B', 500, 2);
-	SMARTS.declareTask(c, 'C', 500, 3);
+	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, roundRobin);
+	SMARTS.declareTask(a, 'A', 224, 3);
+	SMARTS.declareTask(b, 'B', 224, 5);
+	SMARTS.declareTask(c, 'C', 784, 4);
 	SMARTS.runTheTasks();
 }
 
@@ -82,8 +82,8 @@ SMARTS.declareTask(c, 'C', 200, 5);
 /*
 RR fail and EDF succeed:
 SMARTS.declareTask(a, 'A', 224, 3);
-SMARTS.declareTask(b, 'B', 112, 5);
-SMARTS.declareTask(c, 'C', 336, 4);
+SMARTS.declareTask(b, 'B', 224, 5);
+SMARTS.declareTask(c, 'C', 784, 4);
 */
 
 /*
