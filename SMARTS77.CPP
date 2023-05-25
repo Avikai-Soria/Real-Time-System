@@ -61,20 +61,6 @@ int Parallelism::declareTask(void far *code, char name, int roundTime, int round
 		return false;
 }
 
-/*
-int Parallelism::declareTask(void far *code, char name)
-		// Insert a new task entry in SMARTS context array [ ]
-{
-	if (totalTasks < MaxTask-1)
-	{
-		context[totalTasks++].declare(code, userTaskEnd, name);
-		++activeTasks;
-		return true;
-	}
-	else
-		return false;
-}
-*/
 
 void Parallelism::runTheTasks()
 // Start running all tasks declared in SMARTS.

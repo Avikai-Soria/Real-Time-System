@@ -56,3 +56,15 @@ int earliesDeadlineFirst() {
 	}
 	return nextTask;
 }
+
+int rate_monotonic_scheduling(){
+	int lowest = MAXINT;
+	int nextTask = SMARTS.getTotalTasks();
+	for (int i = 0; i < SMARTS.getTotalTasks(); i++) {
+		if(SMARTS.getRoundTime(i) < lowest && SMARTS.getStatus(i) == READY) {
+			nextTask = i;
+			lowest = SMARTS.getRoundTime(i);
+		}
+	}
+	return nextTask;
+}

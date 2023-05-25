@@ -181,5 +181,6 @@ void myTaskEnd();
 // 'short term' scheduler algorithms
 int roundRobin();
 int earliesDeadlineFirst();
+int rate_monotonic_scheduling();
 // main scheduler object
 extern Parallelism SMARTS;

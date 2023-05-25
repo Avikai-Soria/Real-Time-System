@@ -65,10 +65,10 @@ void c()
 void main()
 {
 	clrscr();
-	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, roundRobin);
-	SMARTS.declareTask(a, 'A', 224, 3);
-	SMARTS.declareTask(b, 'B', 224, 5);
-	SMARTS.declareTask(c, 'C', 784, 4);
+	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, rate_monotonic_scheduling);
+	SMARTS.declareTask(a, 'A', 112, 1);
+	SMARTS.declareTask(b, 'B', 224, 2);
+	SMARTS.declareTask(c, 'C', 448, 3);
 	SMARTS.runTheTasks();
 }
 
