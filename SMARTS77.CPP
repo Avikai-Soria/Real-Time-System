@@ -28,6 +28,7 @@ Parallelism::Parallelism()
 	sleepTasks = 0;
 	activeTasks = 0;
 	totalTasks = 0;
+	suspendedTasks = 0;
 	deadlock = false;
 	errorFlag = false;
 	contextSwitchFlag = true;
@@ -512,6 +513,9 @@ Mutex::Mutex()
 	owner = -1;
 	s = 1;
 	level = 0;
+	// frontIndex = -1; // Initialize front index
+	// rearIndex = -1;	 // Initialize rear index
+	priority_queue;
 }
 
 void Mutex::Acquire()
@@ -529,12 +533,16 @@ void Mutex::Acquire()
 		}
 		else
 		{
-			addWaitingTask(SMARTS.getCurrentTask());
-			SMARTS.getContext(SMARTS.getCurrentTask()).status = WAITING;
-			SMARTS.callScheduler();
+			// SMARTS.suspendedTasks++;
+			// addWaitingTask(SMARTS.getCurrentTask());
+			pq.insert(SMARTS.getCurrentTask())
+			SMARTS.suspended()
+			// SMARTS.getContext(SMARTS.getCurrentTask()).status = SUSPENDED;
+			// SMARTS.callScheduler();
 		}
 	}
-
+	owner = SMARTS.getCurrentTask();
+	level++;
 }
 
 void Mutex::Release()
@@ -545,81 +553,56 @@ void Mutex::Release()
 			--level;
 		else
 		{
-			owner = -1;
-			if (s == 0)
+			// if (frontIndex == -1 && rearIndex == -1)
+			if(!pq.isEmpty())
+				owner = pq.remove();
+			else
 			{
-				s = 1;
-				if (waitingTasks.size())
-				{
-					int taskNum = waitingTasks.front();
-					waitingTasks.pop();
-					SMARTS.getContext(taskNum).status = READY;
-				}
+				owner = getWaitingTask();
+				SMARTS.resume(owner);
+				// SMARTS.suspendedTasks--;
 			}
 		}
 	}
 }
 
-
-void Mutex::addWaitingTask(int taskNum)
+void Mutex::putWaitingTask(int taskNum)
 {
-	waitingTasks.push(taskNum);
-}
-
-void Mutex::removeWaitingTask(int taskNum)
-{
-	queue<int> temp;
-	while (waitingTasks.size())
+	if ((rearIndex + 1) % MaxTask == frontIndex)
 	{
-		int task = waitingTasks.front();
-		waitingTasks.pop();
-		if (task != taskNum)
-			temp.push(task);
+		std::cout << "Queue is full. Unable to push item." << std::endl;
+		return;
 	}
-	while (temp.size())
+
+	if (frontIndex == -1 && rearIndex == -1)
 	{
-		waitingTasks.push(temp.front());
-		temp.pop();
+		frontIndex = rearIndex = 0; // Initialize indices for the first element
+	}
+	else
+	{
+		rearIndex = (rearIndex + 1) % MaxTask; // Move rear index circularly
+	}
+
+	data[rearIndex] = item;
+}
+
+void Mutex::getWaitingTask(int taskNum)
+{
+	if (frontIndex == -1 && rearIndex == -1)
+	{
+		std::cout << "Queue is empty. Unable to pop item." << std::endl;
+		return;
+	}
+
+	if (frontIndex == rearIndex)
+	{
+		// If only one element is present, reset the indices
+		frontIndex = rearIndex = -1;
+	}
+	else
+	{
+		frontIndex = (frontIndex + 1) % MAX_SIZE; // Move front index circularly
 	}
 }
 
-void Mutex::setS(int s)
-{
-	this->s = s;
-}
 
-int Mutex::getS()
-{
-	return s;
-}
-
-void Mutex::setOwner(int owner)
-{
-	this->owner = owner;
-}
-
-int Mutex::getOwner()
-{
-	return owner;
-}
-
-int Mutex::getLevel()
-{
-	return level;
-}
-
-void Mutex::setLevel(int level)
-{
-	this->level = level;
-}
-
-queue<int> Mutex::getWaitingTasks()
-{
-	return waitingTasks;
-}
-
-
-void Mutex::setWaitingTasks(queue<int> waitingTasks)
-{
-	this->waitingTasks = waitingTasks;
-}

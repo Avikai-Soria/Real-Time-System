@@ -108,6 +108,7 @@ private:
 public:
 	int sleepTasks;			   // indicates how many task is sleeping, and it can't be deadlock
 	int activeTasks;		   // indicates how many task is activate
+	int suspendedTasks;		   // indicates how many task is suspended
 	int traceInd;			   // debugging index
 	long TScount;			   // counts the clocks of the current task
 	unsigned timerClocksBegin; // time start of the current task
@@ -192,6 +193,8 @@ private:
 	int s;
 	int level;
 	Task waitingTasks[MaxTask];
+	int frontIndex;
+	int rearIndex;
 
 
 public:
@@ -202,4 +205,10 @@ public:
 	void setOwner(int owner);
 	int getLevel();
 	void setLevel(int level);
+	int getS();
+	void setS(int s);
+	int getFront();
+	void setFront(int front);
+	int getBack();
+	void setBack(int back);
 };
