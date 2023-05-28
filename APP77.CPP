@@ -99,3 +99,11 @@ SMARTS.declareTask(a, 'A', 30, 2);
 SMARTS.declareTask(b, 'B', 30, 3);
 SMARTS.declareTask(c, 'C', 30, 4);
 */
+
+/*
+RMS Succeed:
+	SMARTS.declareTask(a, 'A', 112, 1);
+	SMARTS.declareTask(b, 'B', 224, 2);
+	SMARTS.declareTask(c, 'C', 448, 3);
+
+*/

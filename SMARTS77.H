@@ -127,7 +127,7 @@ public:
 	int getTotalTasks();														// get total declared tasks
 	int getDeadlock();															// get deadlock flag
 	void setDeadlock();															// set deadlock flag
-	int getError();															// get deadlock flag
+	int getError();																// get deadlock flag
 	void setError();
 	int contextSwitchOn();	  // enable context switch
 	void contextSwitchOff();  // disable context switch
@@ -162,7 +162,7 @@ public:
 	/* New getters */
 	int getRoundTime(int Tasknum);
 	int getDeadline(int taskNum);
-	// int getRoundCircle(int taskNum);    
+	// int getRoundCircle(int taskNum);
 	int getRemainingRoundCircle(int taskNum);
 	/* New setters */
 	void setDeadline(int Tasknum, int deadline);
@@ -184,3 +184,22 @@ int earliesDeadlineFirst();
 int rate_monotonic_scheduling();
 // main scheduler object
 extern Parallelism SMARTS;
+
+class Mutex
+{
+private:
+	int owner;
+	int s;
+	int level;
+	Task waitingTasks[MaxTask];
+
+
+public:
+	Mutex();
+	void Acquire();
+	void Release();
+	int getOwner();
+	void setOwner(int owner);
+	int getLevel();
+	void setLevel(int level);
+};

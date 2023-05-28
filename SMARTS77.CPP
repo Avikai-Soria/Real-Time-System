@@ -61,7 +61,6 @@ int Parallelism::declareTask(void far *code, char name, int roundTime, int round
 		return false;
 }
 
-
 void Parallelism::runTheTasks()
 // Start running all tasks declared in SMARTS.
 {
@@ -122,7 +121,7 @@ int Parallelism::allTasksDone()
 	for (int i = 0; i < totalTasks; ++i)
 		if (context[i].status != NOT_ACTIVE || context[i].remainingRoundCircle > 1)
 			return false;
-	return true;	
+	return true;
 }
 
 void Parallelism::restoreSchedStack()
@@ -503,4 +502,124 @@ void Task::deadlineDecr()
 		else if (remainingRoundCircle - 1) // There are more rounds left
 			redeclare();
 	}
+}
+
+/////////////////////////////////////////////////
+/**********    class body:  Mutex     **********/
+
+Mutex::Mutex()
+{
+	owner = -1;
+	s = 1;
+	level = 0;
+}
+
+void Mutex::Acquire()
+{
+	if (owner == -1)
+		owner = SMARTS.getCurrentTask();
+	else if (owner == SMARTS.getCurrentTask())
+		++level;
+	else
+	{
+		if (s)
+		{
+			s = 0;
+			owner = SMARTS.getCurrentTask();
+		}
+		else
+		{
+			addWaitingTask(SMARTS.getCurrentTask());
+			SMARTS.getContext(SMARTS.getCurrentTask()).status = WAITING;
+			SMARTS.callScheduler();
+		}
+	}
+
+}
+
+void Mutex::Release()
+{
+	if (owner == SMARTS.getCurrentTask())
+	{
+		if (level)
+			--level;
+		else
+		{
+			owner = -1;
+			if (s == 0)
+			{
+				s = 1;
+				if (waitingTasks.size())
+				{
+					int taskNum = waitingTasks.front();
+					waitingTasks.pop();
+					SMARTS.getContext(taskNum).status = READY;
+				}
+			}
+		}
+	}
+}
+
+
+void Mutex::addWaitingTask(int taskNum)
+{
+	waitingTasks.push(taskNum);
+}
+
+void Mutex::removeWaitingTask(int taskNum)
+{
+	queue<int> temp;
+	while (waitingTasks.size())
+	{
+		int task = waitingTasks.front();
+		waitingTasks.pop();
+		if (task != taskNum)
+			temp.push(task);
+	}
+	while (temp.size())
+	{
+		waitingTasks.push(temp.front());
+		temp.pop();
+	}
+}
+
+void Mutex::setS(int s)
+{
+	this->s = s;
+}
+
+int Mutex::getS()
+{
+	return s;
+}
+
+void Mutex::setOwner(int owner)
+{
+	this->owner = owner;
+}
+
+int Mutex::getOwner()
+{
+	return owner;
+}
+
+int Mutex::getLevel()
+{
+	return level;
+}
+
+void Mutex::setLevel(int level)
+{
+	this->level = level;
+}
+
+queue<int> Mutex::getWaitingTasks()
+{
+	return waitingTasks;
+}
+
+
+void Mutex::setWaitingTasks(queue<int> waitingTasks)
+{
+	this->waitingTasks = waitingTasks;
 }
