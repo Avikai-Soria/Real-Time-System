@@ -186,32 +186,6 @@ int rate_monotonic_scheduling();
 // main scheduler object
 extern Parallelism SMARTS;
 
-class Mutex
-{
-private:
-	int owner;
-	int s;
-	int level;
-	Task waitingTasks[MaxTask];
-	int frontIndex;
-	int rearIndex;
-
-public:
-	Mutex();
-	void Acquire();
-	void Release();
-	int getOwner();
-	void setOwner(int owner);
-	int getLevel();
-	void setLevel(int level);
-	int getS();
-	void setS(int s);
-	int getFront();
-	void setFront(int front);
-	int getBack();
-	void setBack(int back);
-};
-
 class Queue
 {
 private:
@@ -227,4 +201,20 @@ public:
 	void enQueue(int value);
 	int deQueue();
 	void displayQueue();
+	int isFull();
+	int isEmpty();
+};
+
+class Mutex
+{
+private:
+	int owner;
+	int s;
+	int level;
+	Queue queue;
+
+public:
+	Mutex();
+	void Acquire();
+	void Release();
 };

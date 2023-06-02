@@ -508,38 +508,21 @@ void Task::deadlineDecr()
 /////////////////////////////////////////////////
 /**********    class body:  Mutex     **********/
 
-/*Mutex::Mutex()
+Mutex::Mutex()
 {
 	owner = -1;
 	s = 1;
 	level = 0;
-	// frontIndex = -1; // Initialize front index
-	// rearIndex = -1;	 // Initialize rear index
-	priority_queue;
 }
 
 void Mutex::Acquire()
 {
-	if (owner == -1)
-		owner = SMARTS.getCurrentTask();
-	else if (owner == SMARTS.getCurrentTask())
-		++level;
+	if (owner == SMARTS.getCurrentTask() || s == 1)
+		s = 0;
 	else
 	{
-		if (s)
-		{
-			s = 0;
-			owner = SMARTS.getCurrentTask();
-		}
-		else
-		{
-			// SMARTS.suspendedTasks++;
-			// addWaitingTask(SMARTS.getCurrentTask());
-			pq.insert(SMARTS.getCurrentTask())
-				SMARTS.suspended()
-			// SMARTS.getContext(SMARTS.getCurrentTask()).status = SUSPENDED;
-			// SMARTS.callScheduler();
-		}
+		queue.enQueue(SMARTS.getCurrentTask());
+		SMARTS.suspended();
 	}
 	owner = SMARTS.getCurrentTask();
 	level++;
@@ -549,62 +532,24 @@ void Mutex::Release()
 {
 	if (owner == SMARTS.getCurrentTask())
 	{
-		if (level)
-			--level;
+		if (--level)
+			return;
 		else
 		{
-			// if (frontIndex == -1 && rearIndex == -1)
-			if (!pq.isEmpty())
-				owner = pq.remove();
+			owner = -1;
+			if (!queue.isEmpty())
+			{
+				int task = queue.deQueue();
+				SMARTS.resume(task);
+			}
 			else
 			{
-				owner = getWaitingTask();
-				SMARTS.resume(owner);
-				// SMARTS.suspendedTasks--;
+				s = 1;
 			}
 		}
 	}
 }
 
-void Mutex::putWaitingTask(int taskNum)
-{
-	if ((rearIndex + 1) % MaxTask == frontIndex)
-	{
-		std::cout << "Queue is full. Unable to push item." << std::endl;
-		return;
-	}
-
-	if (frontIndex == -1 && rearIndex == -1)
-	{
-		frontIndex = rearIndex = 0; // Initialize indices for the first element
-	}
-	else
-	{
-		rearIndex = (rearIndex + 1) % MaxTask; // Move rear index circularly
-	}
-
-	data[rearIndex] = item;
-}
-
-void Mutex::getWaitingTask(int taskNum)
-{
-	if (frontIndex == -1 && rearIndex == -1)
-	{
-		std::cout << "Queue is empty. Unable to pop item." << std::endl;
-		return;
-	}
-
-	if (frontIndex == rearIndex)
-	{
-		// If only one element is present, reset the indices
-		frontIndex = rearIndex = -1;
-	}
-	else
-	{
-		frontIndex = (frontIndex + 1) % MAX_SIZE; // Move front index circularly
-	}
-}
-*/
 Queue ::Queue()
 {
 	front = rear = -1;
@@ -690,4 +635,14 @@ void Queue::displayQueue()
 		for (i = 0; i <= rear; i++)
 			printf("%d ", arr[i]);
 	}
+}
+
+int Queue::isFull()
+{
+	return (front == 0 && rear == size - 1) || (rear == (front - 1) % (size - 1));
+}
+
+int Queue::isEmpty()
+{
+	return front == -1;
 }
