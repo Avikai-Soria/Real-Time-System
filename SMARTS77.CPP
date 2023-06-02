@@ -508,7 +508,7 @@ void Task::deadlineDecr()
 /////////////////////////////////////////////////
 /**********    class body:  Mutex     **********/
 
-Mutex::Mutex()
+/*Mutex::Mutex()
 {
 	owner = -1;
 	s = 1;
@@ -536,7 +536,7 @@ void Mutex::Acquire()
 			// SMARTS.suspendedTasks++;
 			// addWaitingTask(SMARTS.getCurrentTask());
 			pq.insert(SMARTS.getCurrentTask())
-			SMARTS.suspended()
+				SMARTS.suspended()
 			// SMARTS.getContext(SMARTS.getCurrentTask()).status = SUSPENDED;
 			// SMARTS.callScheduler();
 		}
@@ -554,7 +554,7 @@ void Mutex::Release()
 		else
 		{
 			// if (frontIndex == -1 && rearIndex == -1)
-			if(!pq.isEmpty())
+			if (!pq.isEmpty())
 				owner = pq.remove();
 			else
 			{
@@ -604,39 +604,90 @@ void Mutex::getWaitingTask(int taskNum)
 		frontIndex = (frontIndex + 1) % MAX_SIZE; // Move front index circularly
 	}
 }
-
-PriorityQueue::PriorityQueue() : currentSize(0) {}
-
-void PriorityQueue::push(int value) {
-    if (currentSize >= MAX_SIZE) {
-        // Priority queue is full
-        return;
-    }
-
-    int index = currentSize;
-    while (index > 0 && value > elements[index - 1]) {
-        elements[index] = elements[index - 1];
-        --index;
-    }
-
-    elements[index] = value;
-    ++currentSize;
+*/
+Queue ::Queue()
+{
+	front = rear = -1;
+	size = 5;
 }
 
-void PriorityQueue::pop() {
-    if (empty()) {
-        // Priority queue is empty
-        return;
-    }
+void Queue::enQueue(int value)
+{
+	if ((front == 0 && rear == size - 1) ||
+		(rear == (front - 1) % (size - 1)))
+	{
+		printf("\nQueue is Full");
+		return;
+	}
 
-    --currentSize;
+	else if (front == -1) /* Insert First Element */
+	{
+		front = rear = 0;
+		arr[rear] = value;
+	}
+
+	else if (rear == size - 1 && front != 0)
+	{
+		rear = 0;
+		arr[rear] = value;
+	}
+
+	else
+	{
+		rear++;
+		arr[rear] = value;
+	}
 }
 
-bool PriorityQueue::empty() const {
-    return currentSize == 0;
+// Function to delete element from Circular Queue
+int Queue::deQueue()
+{
+	if (front == -1)
+	{
+		printf("\nQueue is Empty");
+		return -1;
+	}
+
+	int data = arr[front];
+	arr[front] = -1;
+	if (front == rear)
+	{
+		front = -1;
+		rear = -1;
+	}
+	else if (front == size - 1)
+		front = 0;
+	else
+		front++;
+
+	return data;
 }
 
-int PriorityQueue::size() const {
-    return currentSize;
-}
+// Function displaying the elements
+// of Circular Queue
+void Queue::displayQueue()
+{
+	if (front == -1)
+	{
+		printf("\nQueue is Empty");
+		return;
+	}
+	printf("\n Front is %d", front);
+	printf("\n Rear is %d", rear);
 
+	printf("\nElements in Circular Queue are: ");
+	int i;
+	if (rear >= front)
+	{
+		for (i = front; i <= rear; i++)
+			printf("%d ", arr[i]);
+	}
+	else
+	{
+		for (i = front; i < size; i++)
+			printf("%d ", arr[i]);
+
+		for (i = 0; i <= rear; i++)
+			printf("%d ", arr[i]);
+	}
+}

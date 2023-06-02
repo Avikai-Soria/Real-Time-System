@@ -212,18 +212,19 @@ public:
 	void setBack(int back);
 };
 
-class PriorityQueue
+class Queue
 {
-public:
-	PriorityQueue();
-
-	void push(int value);
-	void pop();
-	bool empty() const;
-	int size() const;
-
 private:
-	static const int MAX_SIZE = 100;
-	int elements[MAX_SIZE];
-	int currentSize;
+	// Initialize front and rear
+	int rear, front;
+
+	// Circular Queue
+	int size;
+	int arr[5]; // -> MaxTask
+
+public:
+	Queue();
+	void enQueue(int value);
+	int deQueue();
+	void displayQueue();
 };
