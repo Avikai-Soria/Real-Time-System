@@ -605,4 +605,38 @@ void Mutex::getWaitingTask(int taskNum)
 	}
 }
 
+PriorityQueue::PriorityQueue() : currentSize(0) {}
+
+void PriorityQueue::push(int value) {
+    if (currentSize >= MAX_SIZE) {
+        // Priority queue is full
+        return;
+    }
+
+    int index = currentSize;
+    while (index > 0 && value > elements[index - 1]) {
+        elements[index] = elements[index - 1];
+        --index;
+    }
+
+    elements[index] = value;
+    ++currentSize;
+}
+
+void PriorityQueue::pop() {
+    if (empty()) {
+        // Priority queue is empty
+        return;
+    }
+
+    --currentSize;
+}
+
+bool PriorityQueue::empty() const {
+    return currentSize == 0;
+}
+
+int PriorityQueue::size() const {
+    return currentSize;
+}
 
