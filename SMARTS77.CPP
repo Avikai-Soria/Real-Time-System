@@ -31,7 +31,8 @@ Parallelism::Parallelism()
 	suspendedTasks = 0;
 	deadlock = false;
 	errorFlag = false;
-	contextSwitchFlag = true;
+	for (int i = 0; i < MaxTask; i++)
+		contextSwitchFlag[i] = true;
 	endOfTimeSlice = true;
 }
 
@@ -176,23 +177,23 @@ int Parallelism::contextSwitchOn()
 	if (endOfTimeSlice) // is current time slice finished ?
 	{
 		endOfTimeSlice = false;
-		contextSwitchFlag = true;
+		contextSwitchFlag[SMARTS.getCurrentTask()] = true;
 		callScheduler(); // return control to the scheduler
 		return 1;
 	}
-	contextSwitchFlag = true;
+	contextSwitchFlag[SMARTS.getCurrentTask()] = true;
 	return 0;
 }
 
 void Parallelism::contextSwitchOff()
 // Disable context switch
 {
-	contextSwitchFlag = false;
+	contextSwitchFlag[SMARTS.getCurrentTask()] = false;
 }
 
 int Parallelism::getContextSwitch()
 {
-	return contextSwitchFlag;
+	return contextSwitchFlag[SMARTS.getCurrentTask()];
 }
 
 int Parallelism::getRoundTime(int taskNum)
@@ -562,36 +563,27 @@ Queue ::Queue()
 
 void Queue::enQueue(int value)
 {
-	if ((front == 0 && rear == size - 1) ||
-		(rear == (front - 1) % (size - 1)))
+	if (isFull())
 	{
 		printf("\nQueue is Full");
 		return;
 	}
 
-	else if (front == -1) /* Insert First Element */
+	if (isEmpty())
 	{
 		front = rear = 0;
-		arr[rear] = value;
 	}
-
-	else if (rear == size - 1 && front != 0)
-	{
-		rear = 0;
-		arr[rear] = value;
-	}
-
 	else
 	{
-		rear++;
-		arr[rear] = value;
+		rear = (rear + 1) % size;
 	}
+
+	arr[rear] = value;
 }
 
-// Function to delete element from Circular Queue
 int Queue::deQueue()
 {
-	if (front == -1)
+	if (isEmpty())
 	{
 		printf("\nQueue is Empty");
 		return -1;
@@ -599,46 +591,35 @@ int Queue::deQueue()
 
 	int data = arr[front];
 	arr[front] = -1;
+
 	if (front == rear)
 	{
-		front = -1;
-		rear = -1;
+		front = rear = -1;
 	}
-	else if (front == size - 1)
-		front = 0;
 	else
-		front++;
+	{
+		front = (front + 1) % size;
+	}
 
 	return data;
 }
 
-// Function displaying the elements
-// of Circular Queue
 void Queue::displayQueue()
 {
-	if (front == -1)
+	if (isEmpty())
 	{
 		printf("\nQueue is Empty");
 		return;
 	}
-	printf("\n Front is %d", front);
-	printf("\n Rear is %d", rear);
 
 	printf("\nElements in Circular Queue are: ");
-	int i;
-	if (rear >= front)
-	{
-		for (i = front; i <= rear; i++)
-			printf("%d ", arr[i]);
-	}
-	else
-	{
-		for (i = front; i < size; i++)
-			printf("%d ", arr[i]);
 
-		for (i = 0; i <= rear; i++)
-			printf("%d ", arr[i]);
-	}
+	int i = front;
+	do
+	{
+		printf("%d ", arr[i]);
+		i = (i + 1) % size;
+	} while (i != (rear + 1) % size);
 }
 
 int Queue::isFull()
