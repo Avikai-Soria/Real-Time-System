@@ -517,6 +517,7 @@ Mutex::Mutex()
 
 void Mutex::Acquire()
 {
+	SMARTS.contextSwitchOff();
 	if (owner == SMARTS.getCurrentTask() || s == 1)
 		s = 0;
 	else
@@ -526,10 +527,12 @@ void Mutex::Acquire()
 	}
 	owner = SMARTS.getCurrentTask();
 	level++;
+	SMARTS.contextSwitchOn();
 }
 
 void Mutex::Release()
 {
+	SMARTS.contextSwitchOff();
 	if (owner == SMARTS.getCurrentTask())
 	{
 		if (--level)
@@ -548,6 +551,7 @@ void Mutex::Release()
 			}
 		}
 	}
+	SMARTS.contextSwitchOn();
 }
 
 Queue ::Queue()
