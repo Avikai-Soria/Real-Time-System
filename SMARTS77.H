@@ -97,7 +97,7 @@ private:
 	int deadlock;				  // deadlock flag
 	int errorFlag;				  // error flag
 	int progInt;				  // 'program interrupt' flag
-	int contextSwitchFlag;		  // enables/disables context switch
+	int contextSwitchFlag[MaxTask];		  // enables/disables context switch
 	int endOfTimeSlice;			  // indicates that has to be a context switch as soon as possible
 								  // a pointer to the new timer interrupt handler
 	void interrupt (*timerInterruptHandler)(...);

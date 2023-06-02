@@ -65,11 +65,13 @@ void c()
 void main()
 {
 	clrscr();
-	/*SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, rate_monotonic_scheduling);
+	/*
+	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, rate_monotonic_scheduling);
 	SMARTS.declareTask(a, 'A', 112, 1);
 	SMARTS.declareTask(b, 'B', 224, 2);
 	SMARTS.declareTask(c, 'C', 448, 3);
-	SMARTS.runTheTasks();*/
+	SMARTS.runTheTasks();
+	*/
 	Queue q;
   
     // Inserting elements in Circular Queue
