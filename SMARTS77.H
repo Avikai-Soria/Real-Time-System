@@ -196,7 +196,6 @@ private:
 	int frontIndex;
 	int rearIndex;
 
-
 public:
 	Mutex();
 	void Acquire();
@@ -211,4 +210,20 @@ public:
 	void setFront(int front);
 	int getBack();
 	void setBack(int back);
+};
+
+class PriorityQueue
+{
+public:
+	PriorityQueue();
+
+	void push(int value);
+	void pop();
+	bool empty() const;
+	int size() const;
+
+private:
+	static const int MAX_SIZE = 100;
+	int elements[MAX_SIZE];
+	int currentSize;
 };
