@@ -7,95 +7,73 @@
 /********************************************************************/
 #include "smarts77.h"
 
+Mutex ioMutex;
+Mutex aMutex;
+Mutex bMutex;
+
 // user Functions
 void a()
 {
-	SMARTS.contextSwitchOff();
+	ioMutex.Acquire();
 	cout << "\n *************   A Start    *********************\n";
-	SMARTS.contextSwitchOn();
-	for (int j = 0; j < 50; j++)
+	ioMutex.Release();
+	for (int j = 0; j < 5; j++)
 	{
-		for (long i = 0; i < 600000; i++)
-			; // Waste 600000 operations time
-		SMARTS.contextSwitchOff();
+		for (long i = 0; i < 200000; i++)
+			; // Waste 200000 operations time
+		ioMutex.Acquire();
 		cout << "A";
-		SMARTS.contextSwitchOn();
+		ioMutex.Release();
 	}
-	SMARTS.contextSwitchOff();
+	ioMutex.Acquire();
 	cout << "\n *************   A Finish   *********************\n";
-	SMARTS.contextSwitchOn();
+	ioMutex.Release();
 }
 
 void b()
 {
-	SMARTS.contextSwitchOff();
+	ioMutex.Acquire();
 	cout << "\n *************   B Start    *********************\n";
-	SMARTS.contextSwitchOn();
+	ioMutex.Release();
 	for (int j = 0; j < 50; j++) // Waste 600000 operations time
 	{
 		for (long i = 0; i < 600000; i++)
 			;
-		SMARTS.contextSwitchOff();
+		ioMutex.Acquire();
 		cout << "B";
-		SMARTS.contextSwitchOn();
+		ioMutex.Release();
 	}
-	SMARTS.contextSwitchOff();
+	ioMutex.Acquire();
 	cout << "\n *************   B Finish   *********************\n";
-	SMARTS.contextSwitchOn();
+	ioMutex.Release();
 }
 
 void c()
 {
-	SMARTS.contextSwitchOff();
+	ioMutex.Acquire();
 	cout << "\n *************   C Start    *********************\n";
-	SMARTS.contextSwitchOn();
+	ioMutex.Release();
 	for (int j = 0; j < 50; j++)
 	{
 		for (long i = 0; i < 600000; i++)
 			; // Waste 600000 operations time
-		SMARTS.contextSwitchOff();
+		ioMutex.Acquire();
 		cout << "C";
-		SMARTS.contextSwitchOn();
+		ioMutex.Release();
 	}
-	SMARTS.contextSwitchOff();
+	ioMutex.Acquire();
 	cout << "\n *************   C Finish   *********************\n";
-	SMARTS.contextSwitchOn();
+	ioMutex.Release();
 }
 
 void main()
 {
 	clrscr();
-	/*
 	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, rate_monotonic_scheduling);
 	SMARTS.declareTask(a, 'A', 112, 1);
 	SMARTS.declareTask(b, 'B', 224, 2);
 	SMARTS.declareTask(c, 'C', 448, 3);
 	SMARTS.runTheTasks();
-	*/
-	Queue q;
-  
-    // Inserting elements in Circular Queue
-    q.enQueue(14);
-    q.enQueue(22);
-    q.enQueue(13);
-    q.enQueue(-6);
-  
-    // Display elements present in Circular Queue
-    q.displayQueue();
-  
-    // Deleting elements from Circular Queue
-    printf("\nDeleted value = %d", q.deQueue());
-    printf("\nDeleted value = %d", q.deQueue());
-  
-    q.displayQueue();
-  
-    q.enQueue(9);
-    q.enQueue(20);
-    q.enQueue(5);
-  
-    q.displayQueue();
-  
-    q.enQueue(20);
 }
 
 /*
@@ -132,4 +110,30 @@ RMS Succeed:
 	SMARTS.declareTask(b, 'B', 224, 2);
 	SMARTS.declareTask(c, 'C', 448, 3);
 
+*/
+/*
+	Queue q;
+  
+    // Inserting elements in Circular Queue
+    q.enQueue(14);
+    q.enQueue(22);
+    q.enQueue(13);
+    q.enQueue(-6);
+  
+    // Display elements present in Circular Queue
+    q.displayQueue();
+  
+    // Deleting elements from Circular Queue
+    printf("\nDeleted value = %d", q.deQueue());
+    printf("\nDeleted value = %d", q.deQueue());
+  
+    q.displayQueue();
+  
+    q.enQueue(9);
+    q.enQueue(20);
+    q.enQueue(5);
+  
+    q.displayQueue();
+  
+    q.enQueue(20);
 */

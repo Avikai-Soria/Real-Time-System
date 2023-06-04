@@ -67,6 +67,7 @@ public:
 	int roundTime;			  // the round time
 	int currentDeadline;	  // the current deadline
 	int remainingRoundCircle; // how many rounds left to finish task
+	int contextSwitchFlag;
 	/* Finish new additions */
 
 	/* New restore values */
@@ -97,7 +98,6 @@ private:
 	int deadlock;				  // deadlock flag
 	int errorFlag;				  // error flag
 	int progInt;				  // 'program interrupt' flag
-	int contextSwitchFlag[MaxTask];		  // enables/disables context switch
 	int endOfTimeSlice;			  // indicates that has to be a context switch as soon as possible
 								  // a pointer to the new timer interrupt handler
 	void interrupt (*timerInterruptHandler)(...);

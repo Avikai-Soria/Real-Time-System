@@ -31,8 +31,6 @@ Parallelism::Parallelism()
 	suspendedTasks = 0;
 	deadlock = false;
 	errorFlag = false;
-	for (int i = 0; i < MaxTask; i++)
-		contextSwitchFlag[i] = true;
 	endOfTimeSlice = true;
 }
 
@@ -177,23 +175,23 @@ int Parallelism::contextSwitchOn()
 	if (endOfTimeSlice) // is current time slice finished ?
 	{
 		endOfTimeSlice = false;
-		contextSwitchFlag[SMARTS.getCurrentTask()] = true;
+		context[currentTask].contextSwitchFlag = true;
 		callScheduler(); // return control to the scheduler
 		return 1;
 	}
-	contextSwitchFlag[SMARTS.getCurrentTask()] = true;
+	context[currentTask].contextSwitchFlag = true;
 	return 0;
 }
 
 void Parallelism::contextSwitchOff()
 // Disable context switch
 {
-	contextSwitchFlag[SMARTS.getCurrentTask()] = false;
+	context[currentTask].contextSwitchFlag = false;
 }
 
 int Parallelism::getContextSwitch()
 {
-	return contextSwitchFlag[SMARTS.getCurrentTask()];
+	return context[currentTask].contextSwitchFlag;
 }
 
 int Parallelism::getRoundTime(int taskNum)
@@ -434,6 +432,7 @@ Task::Task()
 	status = NOT_ACTIVE;
 	sleepCount = 0;
 	currentPriority = priority = 0;
+	contextSwitchFlag = true;
 }
 //-----------------------------------------------------
 void Task::declare(void far *code, void far *userTaskEnd, char name, int roundTime, int roundCircle)
@@ -524,7 +523,9 @@ void Mutex::Acquire()
 	else
 	{
 		queue.enQueue(SMARTS.getCurrentTask());
+		SMARTS.contextSwitchOn();
 		SMARTS.suspended();
+		SMARTS.contextSwitchOff();
 	}
 	owner = SMARTS.getCurrentTask();
 	level++;
