@@ -35,9 +35,9 @@ void b()
 	ioMutex.Acquire();
 	cout << "\n *************   B Start    *********************\n";
 	ioMutex.Release();
-	for (int j = 0; j < 50; j++) // Waste 600000 operations time
+	for (int j = 0; j < 5; j++) // Waste 600000 operations time
 	{
-		for (long i = 0; i < 600000; i++)
+		for (long i = 0; i < 200000; i++)
 			;
 		ioMutex.Acquire();
 		cout << "B";
@@ -53,9 +53,9 @@ void c()
 	ioMutex.Acquire();
 	cout << "\n *************   C Start    *********************\n";
 	ioMutex.Release();
-	for (int j = 0; j < 50; j++)
+	for (int j = 0; j < 5; j++)
 	{
-		for (long i = 0; i < 600000; i++)
+		for (long i = 0; i < 200000; i++)
 			; // Waste 600000 operations time
 		ioMutex.Acquire();
 		cout << "C";
