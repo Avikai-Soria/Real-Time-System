@@ -11,13 +11,14 @@ Mutex ioMutex;
 Mutex aMutex;
 Mutex bMutex;
 
-// user Functions
+Event evCtoA,evCtoB;// user Functions
 void a()
 {
+	int j;
 	ioMutex.Acquire();
 	cout << "\n *************   A Start    *********************\n";
 	ioMutex.Release();
-	for (int j = 0; j < 5; j++)
+	for (j = 0; j < 5; j++)
 	{
 		for (long i = 0; i < 200000; i++)
 			; // Waste 200000 operations time
@@ -25,7 +26,19 @@ void a()
 		cout << "A";
 		ioMutex.Release();
 	}
-	ioMutex.Acquire();
+    x<<cin;
+	char d;=
+	 evCtoA.wait(d);
+	for (j = 0; j < 5; j++)
+	{
+		for (long i = 0; i < 200000; i++)
+			; // Waste 200000 operations time
+		ioMutex.Acquire();
+		cout << "A";
+		ioMutex.Release();
+	}
+    aMutex.Acquire();
+	Mutex.Acquire();
 	cout << "\n *************   A Finish   *********************\n";
 	ioMutex.Release();
 }
@@ -70,9 +83,9 @@ void main()
 {
 	clrscr();
 	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, rate_monotonic_scheduling);
-	SMARTS.declareTask(a, 'A', 112, 1);
-	SMARTS.declareTask(b, 'B', 224, 2);
-	SMARTS.declareTask(c, 'C', 448, 3);
+	SMARTS.declareTask(a, 'A', 400, 3);
+	SMARTS.declareTask(b, 'B', 401, 3);
+	SMARTS.declareTask(c, 'C', 402, 3);
 	SMARTS.runTheTasks();
 }
 
