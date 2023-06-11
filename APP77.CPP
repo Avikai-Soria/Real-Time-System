@@ -5,13 +5,17 @@
 /* update  Tishrey   5777                                           */
 /* APP77.CPP, an application to demonstrate SMARTS77  functioning   */
 /********************************************************************/
+
+// נשאר לסדר את הקטע של האקוויר והרליס
+// לפי מש שיש בדוגמא  ולממש את המנגנון של הירושה
+
 #include "smarts77.h"
 
 Mutex ioMutex;
 Mutex aMutex;
 Mutex bMutex;
 
-Event evCtoA,evCtoB;// user Functions
+Event evAtoC, evAtoB; // user Functions
 void a()
 {
 	int j;
@@ -26,9 +30,9 @@ void a()
 		cout << "A";
 		ioMutex.Release();
 	}
-    x<<cin;
-	char d;=
-	 evCtoA.wait(d);
+
+	aMutex.Acquire();
+
 	for (j = 0; j < 5; j++)
 	{
 		for (long i = 0; i < 200000; i++)
@@ -37,8 +41,18 @@ void a()
 		cout << "A";
 		ioMutex.Release();
 	}
-    aMutex.Acquire();
-	Mutex.Acquire();
+	evAtoC.send('A', NULL, 0);
+
+	for (j = 0; j < 5; j++)
+	{
+		for (long i = 0; i < 200000; i++)
+			; // Waste 200000 operations time
+		ioMutex.Acquire();
+		cout << "A";
+		ioMutex.Release();
+	}
+	aMutex.Release();
+	ioMutex.Acquire();
 	cout << "\n *************   A Finish   *********************\n";
 	ioMutex.Release();
 }
@@ -74,6 +88,8 @@ void c()
 		cout << "C";
 		ioMutex.Release();
 	}
+	char r;
+	evAToC.wait(r);
 	ioMutex.Acquire();
 	cout << "\n *************   C Finish   *********************\n";
 	ioMutex.Release();
@@ -83,9 +99,9 @@ void main()
 {
 	clrscr();
 	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, rate_monotonic_scheduling);
-	SMARTS.declareTask(a, 'A', 400, 3);
-	SMARTS.declareTask(b, 'B', 401, 3);
-	SMARTS.declareTask(c, 'C', 402, 3);
+	SMARTS.declareTask(a, 'A', 402, 3); // Low priority
+	SMARTS.declareTask(b, 'B', 401, 3); // Medium priority
+	SMARTS.declareTask(c, 'C', 400, 3); // High priority
 	SMARTS.runTheTasks();
 }
 
@@ -126,27 +142,27 @@ RMS Succeed:
 */
 /*
 	Queue q;
-  
-    // Inserting elements in Circular Queue
-    q.enQueue(14);
-    q.enQueue(22);
-    q.enQueue(13);
-    q.enQueue(-6);
-  
-    // Display elements present in Circular Queue
-    q.displayQueue();
-  
-    // Deleting elements from Circular Queue
-    printf("\nDeleted value = %d", q.deQueue());
-    printf("\nDeleted value = %d", q.deQueue());
-  
-    q.displayQueue();
-  
-    q.enQueue(9);
-    q.enQueue(20);
-    q.enQueue(5);
-  
-    q.displayQueue();
-  
-    q.enQueue(20);
+
+	// Inserting elements in Circular Queue
+	q.enQueue(14);
+	q.enQueue(22);
+	q.enQueue(13);
+	q.enQueue(-6);
+
+	// Display elements present in Circular Queue
+	q.displayQueue();
+
+	// Deleting elements from Circular Queue
+	printf("\nDeleted value = %d", q.deQueue());
+	printf("\nDeleted value = %d", q.deQueue());
+
+	q.displayQueue();
+
+	q.enQueue(9);
+	q.enQueue(20);
+	q.enQueue(5);
+
+	q.displayQueue();
+
+	q.enQueue(20);
 */
