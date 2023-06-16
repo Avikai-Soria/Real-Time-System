@@ -1,0 +1,23 @@
+Start
+
+ *************   C Start    *********************
+Hello there! I am C and I WAIT to A
+
+ *************   B Start    *********************
+Hello there! I am B and I WAIT to A
+
+ *************   A Start    *********************
+Hello there! I am A and I acquire aMutex
+Hello there! I am A and I send to C 
+Hello there! I am A and I send to B 
+Hello there! I am C and A let me go
+Hello there! I am C and and I wait to aMutex
+Hello there! I am B and A let me go
+
+ *************   B Finish    *********************
+Hello there! I am A and I release aMutex
+
+ *************   A finish    *********************
+
+ *************   C Finish    *********************
+End

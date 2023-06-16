@@ -49,9 +49,23 @@ void a()
 		cout << "A";
 		ioMutex.Release();
 	}
-	// char d;
-	// evCtoA.send(d);
+	char d;
+	writeToLog("Hello there! I am A and I send to C \n");
+	evCtoA.send('C',&d,0);
+	writeToLog("Hello there! I am A and I send to B \n");
+	evBtoA.send('B',&d,0);
 
+	for (j = 0; j < 5; j++)
+	{
+		for (long i = 0; i < 200000; i++)
+			; // Waste 200000 operations time
+		ioMutex.Acquire();
+		cout << "A";
+		ioMutex.Release();
+	}
+
+	writeToLog("Hello there! I am A and I release aMutex\n");
+	aMutex.Release();
 
 	ioMutex.Acquire();
 	cout << "\n *************   A Finish   *********************\n";
@@ -62,11 +76,12 @@ void a()
 
 void b()
 {
+	int j;
 	writeToLog( "\n *************   B Start    *********************\n");
 	ioMutex.Acquire();
 	cout << "\n *************   B Start    *********************\n";
 	ioMutex.Release();
-	for (int j = 0; j < 5; j++) // Waste 600000 operations time
+	for (j = 0; j < 5; j++) // Waste 600000 operations time
 	{
 		for (long i = 0; i < 200000; i++)
 			;
@@ -79,6 +94,14 @@ void b()
 	writeToLog("Hello there! I am B and I WAIT to A\n");
 	evBtoA.wait(r);
 	writeToLog("Hello there! I am B and A let me go\n");
+	for ( j = 0; j < 5; j++) // Waste 600000 operations time
+	{
+		for (long i = 0; i < 200000; i++)
+			;
+		ioMutex.Acquire();
+		cout << "B";
+		ioMutex.Release();
+	}
 
 	ioMutex.Acquire();
 	cout << "\n *************   B Finish   *********************\n";
@@ -88,11 +111,12 @@ void b()
 
 void c()
 {
+	int j;
 	writeToLog( "\n *************   C Start    *********************\n");
 	ioMutex.Acquire();
 	cout << "\n *************   C Start    *********************\n";
 	ioMutex.Release();
-	for (int j = 0; j < 5; j++)
+	for ( j = 0; j < 5; j++)
 	{
 		for (long i = 0; i < 200000; i++)
 			; // Waste 600000 operations time
@@ -104,7 +128,20 @@ void c()
 	writeToLog("Hello there! I am C and I WAIT to A\n");
 	evCtoA.wait(r);
 	writeToLog("Hello there! I am C and A let me go\n");
-	
+
+	writeToLog("Hello there! I am C and and I wait to aMutex\n");
+	aMutex.Acquire();
+
+	for ( j = 0; j < 5; j++)
+	{
+		for (long i = 0; i < 200000; i++)
+			; // Waste 600000 operations time
+		ioMutex.Acquire();
+		cout << "C";
+		ioMutex.Release();
+	}
+
+	aMutex.Release();
 	ioMutex.Acquire();
 	cout << "\n *************   C Finish   *********************\n";
 	ioMutex.Release();
@@ -116,9 +153,9 @@ void main()
 	clrscr();
 	writeToLog("Start\n");
 	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, rate_monotonic_scheduling);
-	SMARTS.declareTask(a, 'A', 402, 3);
-	SMARTS.declareTask(b, 'B', 401, 3);
-	SMARTS.declareTask(c, 'C', 400, 3);
+	SMARTS.declareTask(a, 'A', 402, 1);
+	SMARTS.declareTask(b, 'B', 401, 1);
+	SMARTS.declareTask(c, 'C', 400, 1);
 	SMARTS.runTheTasks();
 	writeToLog("End\n");
 }
