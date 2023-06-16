@@ -12,11 +12,19 @@
 Mutex ioMutex;
 Mutex aMutex;
 Mutex bMutex;
-Event evCtoA,evCtoB;// user Functions
+Event evCtoA,evBtoA;// user Functions
+
+void writeToLog(char *str)
+{
+	FILE *f = fopen("log.txt", "a");  //a  == append
+	fprintf(f, str);
+	fclose(f);
+}
 
 // user Functions
 void a()
 {
+	writeToLog( "\n *************   A Start    *********************\n");
 	int j;
 	ioMutex.Acquire();
 	cout << "\n *************   A Start    *********************\n";
@@ -30,9 +38,8 @@ void a()
 		ioMutex.Release();
 	}
 
-
-	char d;
-	evCtoA.wait(d);
+	writeToLog("Hello there! I am A and I acquire aMutex\n");
+	aMutex.Acquire();
 
 	for (j = 0; j < 5; j++)
 	{
@@ -42,16 +49,20 @@ void a()
 		cout << "A";
 		ioMutex.Release();
 	}
-    aMutex.Acquire();
-	// Mutex.Acquire();
+	// char d;
+	// evCtoA.send(d);
+
 
 	ioMutex.Acquire();
 	cout << "\n *************   A Finish   *********************\n";
 	ioMutex.Release();
+	writeToLog( "\n *************   A finish    *********************\n");
+
 }
 
 void b()
 {
+	writeToLog( "\n *************   B Start    *********************\n");
 	ioMutex.Acquire();
 	cout << "\n *************   B Start    *********************\n";
 	ioMutex.Release();
@@ -63,13 +74,21 @@ void b()
 		cout << "B";
 		ioMutex.Release();
 	}
+
+	char r;
+	writeToLog("Hello there! I am B and I WAIT to A\n");
+	evBtoA.wait(r);
+	writeToLog("Hello there! I am B and A let me go\n");
+
 	ioMutex.Acquire();
 	cout << "\n *************   B Finish   *********************\n";
 	ioMutex.Release();
+	writeToLog( "\n *************   B Finish    *********************\n");
 }
 
 void c()
 {
+	writeToLog( "\n *************   C Start    *********************\n");
 	ioMutex.Acquire();
 	cout << "\n *************   C Start    *********************\n";
 	ioMutex.Release();
@@ -82,26 +101,26 @@ void c()
 		ioMutex.Release();
 	}
 	char r;
-	evAToC.wait(r);
+	writeToLog("Hello there! I am C and I WAIT to A\n");
+	evCtoA.wait(r);
+	writeToLog("Hello there! I am C and A let me go\n");
+	
 	ioMutex.Acquire();
 	cout << "\n *************   C Finish   *********************\n";
 	ioMutex.Release();
+	writeToLog( "\n *************   C Finish    *********************\n");
 }
 
 void main()
 {
 	clrscr();
-	FILE *f = fopen("filename.txt", "a");  //a  == append
-
-	fprintf(f,"text to print");
-
-	fclose(f);
-
+	writeToLog("Start\n");
 	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, rate_monotonic_scheduling);
-	SMARTS.declareTask(a, 'A', 400, 3);
+	SMARTS.declareTask(a, 'A', 402, 3);
 	SMARTS.declareTask(b, 'B', 401, 3);
-	SMARTS.declareTask(c, 'C', 402, 3);
+	SMARTS.declareTask(c, 'C', 400, 3);
 	SMARTS.runTheTasks();
+	writeToLog("End\n");
 }
 
 /*
