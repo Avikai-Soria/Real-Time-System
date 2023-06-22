@@ -112,11 +112,11 @@ class Mutex
 {
 private:
 	int owner;
-	int s;
 	int level;
+	int s;
 	Queue queue;
-	int inheritence;
 	int originalRoundTime;
+	int inheritence;
 
 public:
 	Mutex();
@@ -148,7 +148,7 @@ private:
 	void far *userTaskEnd; // a pointer to the function called at the end of each task
 public:
 	Mutex mutexes[MaxMutex];   // all mutex entries
-	int currentMutex; 		   // the current
+	int currentMutex;		   // the current
 	int sleepTasks;			   // indicates how many task is sleeping, and it can't be deadlock
 	int activeTasks;		   // indicates how many task is activate
 	int suspendedTasks;		   // indicates how many task is suspended
@@ -163,16 +163,16 @@ public:
 						   void far *scheduler, void far *userTaskEnd,
 						   int far (*algorithm)());
 	int declareTask(void far *code, char name, int roundTime, int roundCircle); // inserts a new task entry
-	int declareMutex(int inheritance); 
-	void runTheTasks();															// start running the tasks
-	void callScheduler();														// return to the control to the scheduler
-	void restoreSchedStack();													// restore the 'scheduler' stack
-	int getCurrentTask();														// get the current running task entry number
-	void setCurrentTask(int taskNum);											// set the next running task number
-	int getTotalTasks();														// get total declared tasks
-	int getDeadlock();															// get deadlock flag
-	void setDeadlock();															// set deadlock flag
-	int getError();																// get deadlock flag
+	int declareMutex(int inheritance);
+	void runTheTasks();				  // start running the tasks
+	void callScheduler();			  // return to the control to the scheduler
+	void restoreSchedStack();		  // restore the 'scheduler' stack
+	int getCurrentTask();			  // get the current running task entry number
+	void setCurrentTask(int taskNum); // set the next running task number
+	int getTotalTasks();			  // get total declared tasks
+	int getDeadlock();				  // get deadlock flag
+	void setDeadlock();				  // set deadlock flag
+	int getError();					  // get deadlock flag
 	void setError();
 	int contextSwitchOn();	  // enable context switch
 	void contextSwitchOff();  // disable context switch

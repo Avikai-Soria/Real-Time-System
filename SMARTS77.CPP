@@ -438,7 +438,7 @@ void Parallelism::inheriteRoundTime(int owner, int roundTime)
 	for (int i = 0; i < currentMutex; i++)
 	{
 		Mutex mutex = mutexes[i];
-		if(mutexes[i].isTaskInMutex(owner))
+		if (mutexes[i].isTaskInMutex(owner))
 		{
 			inheriteRoundTime(mutexes[i].getOwner(), roundTime);
 			return;
@@ -571,7 +571,7 @@ void Mutex::Acquire()
 			if (ownerRoundTime > currentRoundTime)
 			{
 				SMARTS.setRoundTime(owner, currentRoundTime);
-				//SMARTS.inheriteRoundTime(owner, currentRoundTime);
+				// SMARTS.inheriteRoundTime(owner, currentRoundTime);
 			}
 		}
 		//	SMARTS.contextSwitchOn();
@@ -629,6 +629,7 @@ Queue ::Queue()
 
 void Queue::enQueue(int value)
 {
+	// displayQueue();
 	if (isFull())
 	{
 		printf("\nQueue is Full");
@@ -672,20 +673,25 @@ int Queue::deQueue()
 
 void Queue::displayQueue()
 {
+	printf("Front: %d\n", front);
+	printf("Rear: %d\n", rear);
+	printf("Size: %d\n", size);
+
+
 	if (isEmpty())
 	{
-		printf("\nQueue is Empty");
+		printf("Queue is Empty");
 		return;
 	}
 
-	printf("\nElements in Circular Queue are: ");
+	printf("Elements in Circular Queue are: ");
 
-	int i = front;
-	do
+	for (int j = 0; j < 5; j++)
 	{
-		printf("%d ", arr[i]);
-		i = (i + 1) % size;
-	} while (i != (rear + 1) % size);
+		printf("%d ", arr[j]);
+	}
+
+	printf("\n"); // Add a newline character after printing the queue elements
 }
 
 int Queue::isFull()
