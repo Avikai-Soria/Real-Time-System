@@ -10,12 +10,12 @@
 
 Mutex ioMutex;
 
-Event evAtoB, evBtoC, evCtoD, evDtoE;
+Event evAtoB, evBtoC, evCtoD, evDtoE, evFtoE;
 
 void clearLog()
 {
-    FILE *f = fopen("log.txt", "w"); // w  == write mode (truncate the file)
-    fclose(f);
+	FILE *f = fopen("log.txt", "w"); // w  == write mode (truncate the file)
+	fclose(f);
 }
 
 void writeToLog(char *str)
@@ -62,6 +62,7 @@ void a()
 	}
 
 	writeToLog("\nHello there! I am A and I release SMARTS.mutexes[0]\n");
+	//printf("\nCurrent roundtime for A: %d\n", SMARTS.getRoundTime(SMARTS.getCurrentTask()));
 	SMARTS.mutexes[0].Release();
 	writeToLog("SMARTS.mutexes[0] was released.\n");
 
@@ -149,6 +150,7 @@ void b()
 	}
 
 	writeToLog("\nHello there, I am B and I release SMARTS.mutexes[0]\n");
+	//printf("\nCurrent roundtime for B: %d\n", SMARTS.getRoundTime(SMARTS.getCurrentTask()));
 	SMARTS.mutexes[0].Release();
 
 	for (j = 0; j < 5; j++)
@@ -234,6 +236,7 @@ void c()
 		ioMutex.Release();
 	}
 
+	//printf("\nCurrent roundtime for C: %d\n", SMARTS.getRoundTime(SMARTS.getCurrentTask()));
 	writeToLog("\nHello there, I am C and I release SMARTS.mutexes[1]\n");
 	SMARTS.mutexes[1].Release();
 
@@ -320,6 +323,7 @@ void d()
 		ioMutex.Release();
 	}
 
+	//printf("\nCurrent roundtime for D: %d\n", SMARTS.getRoundTime(SMARTS.getCurrentTask()));
 	writeToLog("\nHello there, I am D and I release SMARTS.mutexes[2]\n");
 	SMARTS.mutexes[2].Release();
 
@@ -381,6 +385,20 @@ void e()
 		ioMutex.Release();
 	}
 
+	writeToLog("\nHello there, I'm E and I send F\n");
+	evFtoE.send('F', &e, 0);
+
+	for (j = 0; j < 5; j++) // Waste 600000 operations time
+	{
+		for (long i = 0; i < 200000; i++)
+			;
+		ioMutex.Acquire();
+		cout << "E";
+		writeToLog("E");
+		ioMutex.Release();
+	}
+
+	//printf("\nCurrent roundtime for E: %d\n", SMARTS.getRoundTime(SMARTS.getCurrentTask()));
 	writeToLog("\nHello there! I'm E and I release SMARTS.mutexes[3]\n");
 	SMARTS.mutexes[3].Release();
 
@@ -400,6 +418,47 @@ void e()
 	ioMutex.Release();
 }
 
+void f()
+{
+	//printf("After change: owner: 5, roundTime: %d\n", owner, SMARTS.getRoundTime(5));
+	int j;
+	ioMutex.Acquire();
+	cout << "\n ************* F Start *********************\n";
+	writeToLog("\n ************* F Start *********************\n");
+	ioMutex.Release();
+
+	for (j = 0; j < 5; j++)
+	{
+		for (long i = 0; i < 200000; i++)
+			; // Waste 200000 operations time
+		ioMutex.Acquire();
+		cout << "F";
+		writeToLog("F");
+		ioMutex.Release();
+	}
+
+	char r;
+	writeToLog("\nHello there! I am F and I WAIT to E\n");
+	evFtoE.wait(r);
+	writeToLog("Hello there! I am F and E let me go\n");
+
+	for (j = 0; j < 20; j++)
+	{
+		for (long i = 0; i < 200000; i++)
+			; // Waste 200000 operations time
+		ioMutex.Acquire();
+		cout << "F";
+		writeToLog("F");
+		ioMutex.Release();
+	}
+
+	ioMutex.Acquire();
+	//printf("\nCurrent roundtime for F: %d\n", SMARTS.getRoundTime(SMARTS.getCurrentTask()));
+	cout << "\n *************   F Finish   *********************\n";
+	writeToLog("\n *************   F finish    *********************\n");
+	ioMutex.Release();
+}
+
 void main()
 {
 	clrscr();
@@ -412,10 +471,14 @@ void main()
 		SMARTS.declareMutex(1);
 
 	SMARTS.declareTask(a, 'A', 800, 1); // 5
+
+	SMARTS.declareTask(f, 'F', 810, 1); // 4.5
+
 	SMARTS.declareTask(b, 'B', 820, 1); // 4
 	SMARTS.declareTask(c, 'C', 840, 1); // 3
 	SMARTS.declareTask(d, 'D', 860, 1); // 2
 	SMARTS.declareTask(e, 'E', 880, 1); // 1
+
 
 	SMARTS.runTheTasks();
 	writeToLog("End\n");

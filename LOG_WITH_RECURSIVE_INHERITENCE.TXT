@@ -1,0 +1,82 @@
+Start
+
+ *************   A Start    *********************
+AAAAA
+Hello there! I am A and I WAIT to B
+
+ ************* F Start *********************
+FFFFF
+Hello there! I am F and I WAIT to E
+
+ *************   B Start    *********************
+BBBBB
+Hello there! I am B and I WAIT to C
+
+ ************* C Start *********************
+CCCCC
+Hello there! I am C and I WAIT to D
+
+ ************* D Start *********************
+DDDDD
+Hello there! I am D and I WAIT to E
+
+ *************   E Start    *********************
+EEEEE
+Hello there, I'm E and I acquire SMARTS.mutexes[3]!
+EEEEE
+Hello there, I'm E and I send D
+Hello there! I am D and E let me go
+Hello there! I am D and I acquire SMARTS.mutexes[2]
+DDDDD
+Hello there! I am D and I send to C
+Hello there! I am D and I acquire SMARTS.mutexes[3]
+Hello there! I am C and D let me go
+Hello there! I am C and I acquire SMARTS.mutexes[1]
+CCCCC
+Hello there! I am C and I send to B
+Hello there! I am C and I acquire SMARTS.mutexes[2]
+Hello there! I am B and C let me go
+Hello there! I am B and I acquire SMARTS.mutexes[0]
+BBBBB
+Hello there! I am B and I send to A
+Hello there! I am B and I acquire SMARTS.mutexes[1]
+Hello there! I am A and B let me go
+
+Hello there! I am A and I acquire SMARTS.mutexes[0]
+EEEEE
+Hello there, I'm E and I send F
+EEEEE
+Hello there! I'm E and I release SMARTS.mutexes[3]
+Hello there! I am D and I got SMARTS.mutexes[3]
+DDDDD
+Hello there, I am D and I release SMARTS.mutexes[3]
+DDDDD
+Hello there, I am D and I release SMARTS.mutexes[2]
+Hello there! I am C and I got SMARTS.mutexes[2]
+CCCCC
+Hello there, I am C and I release SMARTS.mutexes[2]
+CCCCC
+Hello there, I am C and I release SMARTS.mutexes[1]
+Hello there! I am B and I got SMARTS.mutexes[1]
+BBBBB
+Hello there, I am B and I release SMARTS.mutexes[1]
+BBBBB
+Hello there, I am B and I release SMARTS.mutexes[0]
+Hello there! I am A and I got SMARTS.mutexes[0]
+AAAAA
+Hello there! I am A and I release SMARTS.mutexes[0]
+SMARTS.mutexes[0] was released.
+AAAAA
+ *************   A finish    *********************
+Hello there! I am F and E let me go
+FFFFFFFFFFFFFFFFFFFF
+ *************   F finish    *********************
+BBBBB
+ *************   B finish    *********************
+CCCCC
+ *************   C finish    *********************
+DDDDD
+ *************   D finish    *********************
+EEEEE
+ *************   E Finish    *********************
+End

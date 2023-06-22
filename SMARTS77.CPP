@@ -434,7 +434,15 @@ void Parallelism::taskEnd()
 
 void Parallelism::inheriteRoundTime(int owner, int roundTime)
 {
+	/*if (owner == 5)
+	{
+		printf("You were not supposed to reach here");
+		printf("!!!!!!!!!!!!!!!$#@!$!@$!@#$!@#$@#!$!@#$#@%$@#$^%$#%&^%#$");
+	}*/
+
 	SMARTS.setRoundTime(owner, roundTime);
+	// printf("After change: owner: %d, roundTime: %d\n", owner, SMARTS.getRoundTime(owner));
+	// printf("After change: owner: 5, roundTime: %d\n", SMARTS.getRoundTime(5));
 	for (int i = 0; i < currentMutex; i++)
 	{
 		Mutex mutex = mutexes[i];
@@ -559,19 +567,19 @@ void Mutex::Acquire()
 	if (owner == SMARTS.getCurrentTask() || s == 1)
 	{
 		s = 0;
-		originalRoundTime = SMARTS.getRoundTime(SMARTS.getCurrentTask());
 	}
 	else
 	{
 		queue.enQueue(SMARTS.getCurrentTask());
 		if (inheritence)
 		{
+			// printf("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!owner: %d\n!!!!!!!!!!!!!!!!!!!!!", SMARTS.getCurrentTask());
 			int ownerRoundTime = SMARTS.getRoundTime(owner);
 			int currentRoundTime = SMARTS.getRoundTime(SMARTS.getCurrentTask());
 			if (ownerRoundTime > currentRoundTime)
 			{
 				SMARTS.setRoundTime(owner, currentRoundTime);
-				// SMARTS.inheriteRoundTime(owner, currentRoundTime);
+				//SMARTS.inheriteRoundTime(owner, currentRoundTime);
 			}
 		}
 		//	SMARTS.contextSwitchOn();
@@ -579,6 +587,7 @@ void Mutex::Acquire()
 		//	SMARTS.contextSwitchOff();
 	}
 	owner = SMARTS.getCurrentTask();
+	originalRoundTime = SMARTS.getRoundTime(SMARTS.getCurrentTask());
 	level++;
 	SMARTS.contextSwitchOn();
 }
@@ -676,7 +685,6 @@ void Queue::displayQueue()
 	printf("Front: %d\n", front);
 	printf("Rear: %d\n", rear);
 	printf("Size: %d\n", size);
-
 
 	if (isEmpty())
 	{
