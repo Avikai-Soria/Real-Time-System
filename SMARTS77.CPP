@@ -508,11 +508,12 @@ void Task::deadlineDecr()
 /////////////////////////////////////////////////
 /**********    class body:  Mutex     **********/
 
-Mutex::Mutex()
+Mutex::Mutex(int in)
 {
 	owner = -1;
 	s = 1;
 	level = 0;
+	this->in=in;
 }
 
 void Mutex::Acquire()
@@ -523,9 +524,10 @@ void Mutex::Acquire()
 	else
 	{
 		queue.enQueue(SMARTS.getCurrentTask());
-		SMARTS.contextSwitchOn();
+		if (in)
+	//	SMARTS.contextSwitchOn();
 		SMARTS.suspended();
-		SMARTS.contextSwitchOff();
+	//	SMARTS.contextSwitchOff();
 	}
 	owner = SMARTS.getCurrentTask();
 	level++;
