@@ -19,6 +19,7 @@
 #define userInt 0x60
 #define MaxTask 15
 #define MaxStack 512
+#define MaxMutex 4
 enum taskStatus
 {
 	READY,
@@ -86,6 +87,46 @@ public:
 	void incrPriority();
 	void setOriginalPriority();
 };
+
+class Queue
+{
+private:
+	// Initialize front and rear
+	int rear, front;
+
+	// Circular Queue
+	int size;
+	int arr[5]; // -> MaxTask
+
+public:
+	Queue();
+	void enQueue(int value);
+	int deQueue();
+	void displayQueue();
+	int isFull();
+	int isEmpty();
+	int isNumberInQueue(int number);
+};
+
+class Mutex
+{
+private:
+	int owner;
+	int s;
+	int level;
+	Queue queue;
+	int inheritence;
+	int originalRoundTime;
+
+public:
+	Mutex();
+	void Acquire();
+	void Release();
+	void enableInheritence();
+	int isTaskInMutex(int taskNumber);
+	int getOwner();
+};
+
 //                           Main class
 class Parallelism
 {
@@ -106,6 +147,8 @@ private:
 	void far *scheduler;   // a pointer to the scheduler
 	void far *userTaskEnd; // a pointer to the function called at the end of each task
 public:
+	Mutex mutexes[MaxMutex];   // all mutex entries
+	int currentMutex; 		   // the current
 	int sleepTasks;			   // indicates how many task is sleeping, and it can't be deadlock
 	int activeTasks;		   // indicates how many task is activate
 	int suspendedTasks;		   // indicates how many task is suspended
@@ -120,6 +163,7 @@ public:
 						   void far *scheduler, void far *userTaskEnd,
 						   int far (*algorithm)());
 	int declareTask(void far *code, char name, int roundTime, int roundCircle); // inserts a new task entry
+	int declareMutex(int inheritance); 
 	void runTheTasks();															// start running the tasks
 	void callScheduler();														// return to the control to the scheduler
 	void restoreSchedStack();													// restore the 'scheduler' stack
@@ -171,6 +215,8 @@ public:
 	void setRemainingRoundCircle(int Tasknum, int remainingRoundCircle);
 	/* New function to check that all tasks finished*/
 	int allTasksDone();
+	/* New function to inherent round time*/
+	void inheriteRoundTime(int owner, int roundTime);
 };
 //=======================
 /**********    Functions    **********/
@@ -186,38 +232,3 @@ int earliesDeadlineFirst();
 int rate_monotonic_scheduling();
 // main scheduler object
 extern Parallelism SMARTS;
-
-class Queue
-{
-private:
-	// Initialize front and rear
-	int rear, front;
-
-	// Circular Queue
-	int size;
-	int arr[5]; // -> MaxTask
-
-public:
-	Queue();
-	void enQueue(int value);
-	int deQueue();
-	void displayQueue();
-	int isFull();
-	int isEmpty();
-};
-
-class Mutex
-{
-private:
-	int owner;
-	int s;
-	int level;
-	Queue queue;
-	int inheritence;
-	int originalRoundTime;
-
-public:
-	Mutex(int in);
-	void Acquire();
-	void Release();
-};

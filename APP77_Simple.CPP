@@ -8,9 +8,9 @@
 
 #include "smarts77.h"
 
-Mutex ioMutex;
-Mutex aMutex = SMARTS.mutexes[0];
-Mutex bMutex = SMARTS.mutexes[1];
+Mutex ioMutex(0);
+Mutex aMutex(1);
+Mutex bMutex(1);
 Event evCtoA, evEtoA;
 Event evFtoB, evDtoB;
 
@@ -320,10 +320,6 @@ void main()
 	clrscr();
 	writeToLog("Start\n");
 	SMARTS.externalFunctions(timerInterruptHandler, scheduler, myTaskEnd, rate_monotonic_scheduling);
-
-	SMARTS.declareMutex(1);
-	SMARTS.declareMutex(1);
-
 	SMARTS.declareTask(a, 'A', 412, 1); // L
 	SMARTS.declareTask(e, 'E', 407, 1); // M
 	SMARTS.declareTask(c, 'C', 402, 1); // H

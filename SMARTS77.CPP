@@ -61,6 +61,18 @@ int Parallelism::declareTask(void far *code, char name, int roundTime, int round
 		return false;
 }
 
+int Parallelism::declareMutex(int inheritance)
+{
+	if (currentMutex == MaxMutex)
+		return false;
+	if (inheritance)
+	{
+		mutexes[currentMutex].enableInheritence();
+	}
+	currentMutex++;
+	return true;
+}
+
 void Parallelism::runTheTasks()
 // Start running all tasks declared in SMARTS.
 {
@@ -420,6 +432,21 @@ void Parallelism::taskEnd()
 	SMARTS.callScheduler(); // return the control to the scheduler to run a next task
 }
 
+void Parallelism::inheriteRoundTime(int owner, int roundTime)
+{
+	SMARTS.setRoundTime(owner, roundTime);
+	for (int i = 0; i < currentMutex; i++)
+	{
+		Mutex mutex = mutexes[i];
+		if(mutexes[i].isTaskInMutex(owner))
+		{
+			inheriteRoundTime(mutexes[i].getOwner(), roundTime);
+			return;
+		}
+	}
+	return;
+}
+
 /**********    class body:  Task     **********/
 Task::Task()
 {
@@ -513,12 +540,17 @@ void Task::deadlineDecr()
 /////////////////////////////////////////////////
 /**********    class body:  Mutex     **********/
 
-Mutex::Mutex(int in)
+Mutex::Mutex()
 {
 	owner = -1;
 	s = 1;
 	level = 0;
-	inheritence = in;
+	inheritence = 0;
+}
+
+void Mutex::enableInheritence()
+{
+	inheritence = 1;
 }
 
 void Mutex::Acquire()
@@ -539,6 +571,7 @@ void Mutex::Acquire()
 			if (ownerRoundTime > currentRoundTime)
 			{
 				SMARTS.setRoundTime(owner, currentRoundTime);
+				//SMARTS.inheriteRoundTime(owner, currentRoundTime);
 			}
 		}
 		//	SMARTS.contextSwitchOn();
@@ -576,6 +609,16 @@ void Mutex::Release()
 		}
 	}
 	SMARTS.contextSwitchOn();
+}
+
+int Mutex::isTaskInMutex(int taskNumber)
+{
+	return queue.isNumberInQueue(taskNumber);
+}
+
+int Mutex::getOwner()
+{
+	return owner;
 }
 
 Queue ::Queue()
@@ -653,4 +696,20 @@ int Queue::isFull()
 int Queue::isEmpty()
 {
 	return front == -1;
+}
+
+int Queue::isNumberInQueue(int number)
+{
+	if (isEmpty())
+		return false;
+
+	for (int i = 0; i < size; i++)
+	{
+		if (arr[i] == number)
+		{
+			return true; // Number found in the queue
+		}
+	}
+
+	return false; // Number not found in the queue
 }
