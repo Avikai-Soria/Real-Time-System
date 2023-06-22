@@ -221,6 +221,11 @@ void Parallelism::setDeadline(int taskNum, int deadline)
 	(taskNum <= totalTasks) ? context[taskNum].currentDeadline = deadline : -1;
 }
 
+void Parallelism::setRoundTime(int taskNum, int roundTime)
+{
+	(taskNum <= totalTasks) ? context[taskNum].roundTime = roundTime : -1;
+}
+
 void Parallelism::setRemainingRoundCircle(int taskNum, int roundCircle)
 {
 	(taskNum <= totalTasks) ? context[taskNum].remainingRoundCircle = roundCircle : -1;
@@ -513,21 +518,32 @@ Mutex::Mutex(int in)
 	owner = -1;
 	s = 1;
 	level = 0;
-	this->in=in;
+	inheritence = in;
 }
 
 void Mutex::Acquire()
 {
 	SMARTS.contextSwitchOff();
 	if (owner == SMARTS.getCurrentTask() || s == 1)
+	{
 		s = 0;
+		originalRoundTime = SMARTS.getRoundTime(SMARTS.getCurrentTask());
+	}
 	else
 	{
 		queue.enQueue(SMARTS.getCurrentTask());
-		if (in)
-	//	SMARTS.contextSwitchOn();
+		if (inheritence)
+		{
+			int ownerRoundTime = SMARTS.getRoundTime(owner);
+			int currentRoundTime = SMARTS.getRoundTime(SMARTS.getCurrentTask());
+			if (ownerRoundTime > currentRoundTime)
+			{
+				SMARTS.setRoundTime(owner, currentRoundTime);
+			}
+		}
+		//	SMARTS.contextSwitchOn();
 		SMARTS.suspended();
-	//	SMARTS.contextSwitchOff();
+		//	SMARTS.contextSwitchOff();
 	}
 	owner = SMARTS.getCurrentTask();
 	level++;
@@ -543,6 +559,10 @@ void Mutex::Release()
 			return;
 		else
 		{
+			if (inheritence)
+			{
+				SMARTS.setRoundTime(owner, originalRoundTime);
+			}
 			owner = -1;
 			if (!queue.isEmpty())
 			{

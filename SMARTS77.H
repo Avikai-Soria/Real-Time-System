@@ -166,6 +166,7 @@ public:
 	// int getRoundCircle(int taskNum);
 	int getRemainingRoundCircle(int taskNum);
 	/* New setters */
+	void setRoundTime(int Tasknum, int RoundTime);
 	void setDeadline(int Tasknum, int deadline);
 	void setRemainingRoundCircle(int Tasknum, int remainingRoundCircle);
 	/* New function to check that all tasks finished*/
@@ -212,9 +213,11 @@ private:
 	int s;
 	int level;
 	Queue queue;
+	int inheritence;
+	int originalRoundTime;
 
 public:
-	Mutex();
+	Mutex(int in);
 	void Acquire();
 	void Release();
 };
