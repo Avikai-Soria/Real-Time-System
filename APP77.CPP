@@ -470,14 +470,14 @@ void main()
 	for (int i = 0; i < 4; i++)
 		SMARTS.declareMutex(1);
 
-	SMARTS.declareTask(a, 'A', 800, 1); // 5
+	SMARTS.declareTask(a, 'A', 800, 3); // 5
 
-	SMARTS.declareTask(f, 'F', 810, 1); // 4.5
+	SMARTS.declareTask(f, 'F', 810, 3); // 4.5
 
-	SMARTS.declareTask(b, 'B', 820, 1); // 4
-	SMARTS.declareTask(c, 'C', 840, 1); // 3
-	SMARTS.declareTask(d, 'D', 860, 1); // 2
-	SMARTS.declareTask(e, 'E', 880, 1); // 1
+	SMARTS.declareTask(b, 'B', 820, 3); // 4
+	SMARTS.declareTask(c, 'C', 840, 3); // 3
+	SMARTS.declareTask(d, 'D', 860, 3); // 2
+	SMARTS.declareTask(e, 'E', 880, 3); // 1
 
 
 	SMARTS.runTheTasks();
