@@ -36,15 +36,6 @@ int roundRobin()
 }
 */
 
-/*
-void updateAllTasks() {
-	for (int i = 0; i < SMARTS.getTotalTasks(); i++) {
-		SMARTS.setDeadline(i, SMARTS.getDeadline(i) - 1);
-	}
-	int curr = SMARTS.getCurrentTask();
-}
-*/
-
 int earliesDeadlineFirst() {
 	int lowest = MAXINT;
 	int nextTask = SMARTS.getTotalTasks();
