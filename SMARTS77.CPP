@@ -414,14 +414,6 @@ void Parallelism::handleTimers()
 		cprintf("Remaining Round Circle: %d", context[i].remainingRoundCircle);
 		cprintf("Current Deadline: %d", context[i].currentDeadline);
 		*/
-		/*
-		cout << "Debug info: information about task number " << i << "\n";
-		cout << "Name: " << context[i].name << "\n";
-		cout << "Status: " << context[i].status << "\n";
-		cout << "Remaining Round Circle: " << context[i].remainingRoundCircle << "\n";
-		cout << "Current Deadline: " << context[i].currentDeadline << "\n";
-
-		*/
 	}
 }
 
@@ -434,15 +426,8 @@ void Parallelism::taskEnd()
 
 void Parallelism::inheriteRoundTime(int owner, int roundTime)
 {
-	/*if (owner == 5)
-	{
-		printf("You were not supposed to reach here");
-		printf("!!!!!!!!!!!!!!!$#@!$!@$!@#$!@#$@#!$!@#$#@%$@#$^%$#%&^%#$");
-	}*/
 
 	SMARTS.setRoundTime(owner, roundTime);
-	// printf("After change: owner: %d, roundTime: %d\n", owner, SMARTS.getRoundTime(owner));
-	// printf("After change: owner: 5, roundTime: %d\n", SMARTS.getRoundTime(5));
 	for (int i = 0; i < currentMutex; i++)
 	{
 		Mutex mutex = mutexes[i];
@@ -573,18 +558,15 @@ void Mutex::Acquire()
 		queue.enQueue(SMARTS.getCurrentTask());
 		if (inheritence)
 		{
-			// printf("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!owner: %d\n!!!!!!!!!!!!!!!!!!!!!", SMARTS.getCurrentTask());
 			int ownerRoundTime = SMARTS.getRoundTime(owner);
 			int currentRoundTime = SMARTS.getRoundTime(SMARTS.getCurrentTask());
 			if (ownerRoundTime > currentRoundTime)
 			{
-				SMARTS.setRoundTime(owner, currentRoundTime);
-				//SMARTS.inheriteRoundTime(owner, currentRoundTime);
+				//SMARTS.setRoundTime(owner, currentRoundTime);
+				SMARTS.inheriteRoundTime(owner, currentRoundTime);
 			}
 		}
-		//	SMARTS.contextSwitchOn();
 		SMARTS.suspended();
-		//	SMARTS.contextSwitchOff();
 	}
 	owner = SMARTS.getCurrentTask();
 	originalRoundTime = SMARTS.getRoundTime(SMARTS.getCurrentTask());
